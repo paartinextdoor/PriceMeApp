@@ -26,7 +26,10 @@ class PriceMeScreen extends StatefulWidget {
 }
 
 class _PriceMeScreenState extends State<PriceMeScreen> {
-
+  TextEditingController itemNameController = TextEditingController();
+  TextEditingController materialCostController = TextEditingController();
+  TextEditingController labourHoursController = TextEditingController();
+  double? totalPrice;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,28 +37,62 @@ class _PriceMeScreenState extends State<PriceMeScreen> {
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
-            children: [
-              TextField(
-                decoration: const InputDecoration(labelText: 'ITEM NAME: '),
+          children: [
+            TextField(
+              controller: itemNameController,
+              decoration: const InputDecoration(labelText: 'ITEM NAME: '),
             ),
-              const SizedBox(height: 20),
-              TextField(
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'ITEM PRICE: ', prefixText: '\$'),
+            const SizedBox(height: 20),
+            TextField(
+              controller: materialCostController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'MATERIAL COST: ',
+                prefixText: '\$',
               ),
-              const SizedBox(height: 20),
-              TextField(
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'LABOR HOURS: '),
-              ),
-              const SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: () {},
-                child: const Text('CALCULATE'),
-              ),
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: labourHoursController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'LABOR HOURS: '),
+            ),
+            const SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: calculateTotalPrice,
+              child: const Text('CALCULATE'),
+            ),
+            const SizedBox(height: 20),
+            if (totalPrice != null)
+              Text('Total Price: \$${totalPrice!.toStringAsFixed(2)}'),
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    itemNameController.dispose();
+    materialCostController.dispose();
+    labourHoursController.dispose();
+    super.dispose();
+  }
+
+  void calculateTotalPrice() {
+    final materialCost = double.tryParse(materialCostController.text);
+    final laborHours = double.tryParse(labourHoursController.text);
+
+    if (materialCost == null || laborHours == null) {
+      setState(() {
+        totalPrice = null; // or handle error
+      });
+      return;
+    }
+
+    const laborRate = 10.0; // example rate per hour
+    setState(() {
+      totalPrice = materialCost + (laborHours * laborRate);
+    });
   }
 }
