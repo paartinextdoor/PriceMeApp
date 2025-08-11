@@ -1,32 +1,42 @@
-# PriceME App
+<h1 style="color: #2c3e50;">PriceMe</h1>
 
-A Flutter app to help handmade craft makers price their items based on material cost, labor hours, and (later) competitive research from online platforms like Etsy.
+<p>PriceMe is a <strong>Flutter-based</strong> mobile app designed to help users calculate and track the pricing of handmade crafts. It allows manual entry of material costs, labor hours, and compares prices with similar products from other platforms.</p>
 
----
+<h2>Features</h2>
+<ul>
+  <li>Add items with material costs and labor hours</li>
+  <li>Automatic calculation of total price</li>
+  <li>Optional comparison with e-commerce prices</li>
+  <li>Clean, simple interface for quick use</li>
+</ul>
 
-## Features
+<h2>Tech Stack</h2>
+<ul>
+  <li>Flutter (Dart) for cross-platform development</li>
+  <li>Supports Android, iOS, Web, Windows, macOS, and Linux</li>
+</ul>
 
-- Add craft name, material cost and hours spent
-- Calculate a fair price using a simple formula
-- (COming soon) Compare with real-world Etsy/eBay prices for similar products
+<h2>Getting Started</h2>
+<p>To run this project locally:</p>
+<ol>
+  <li>Make sure Flutter is installed on your system.</li>
+  <li>Clone this repository:
+  <pre><code>git clone https://github.com/&lt;your-username&gt;/PriceMeApp.git</code></pre>
+  </li>
+  <li>Navigate to the project folder:
+  <pre><code>cd PriceMeApp</code></pre>
+  </li>
+  <li>Install dependencies:
+  <pre><code>flutter pub get</code></pre>
+  </li>
+  <li>Run the app:
+  <pre><code>flutter run</code></pre>
+  </li>
+</ol>
 
-
-## Getting Started
-
-### Prerequisites
-
-- Flutter SDK
-- VS Code
-- Python + Flask (for later backend development)
-
-### Installation
-
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<h2>Future Plans</h2>
+<ul>
+  <li>Barcode scanning to auto-fill product information</li>
+  <li>Export pricing reports as PDF</li>
+  <li>Cloud sync for backup and sharing</li>
+</ul>
