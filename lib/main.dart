@@ -37,8 +37,8 @@ class _PriceMeScreenState extends State<PriceMeScreen> {
     'Jewelry',
     'Quilling',
     'Decor',
-    'Cricut Cuts',
-    'Handmade Cards',
+    'Cricut Cut',
+    'Handmade Card',
   ];
 
   InputDecoration inputDecoration(String label) {
@@ -216,6 +216,7 @@ class _PriceMeScreenState extends State<PriceMeScreen> {
     }
     setState(() {
       totalPrice = materialCost + (laborHours * laborRate);
+      displayedItemName = itemName;
     });
   }
 }
