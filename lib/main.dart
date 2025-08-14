@@ -29,43 +29,146 @@ class _PriceMeScreenState extends State<PriceMeScreen> {
   TextEditingController itemNameController = TextEditingController();
   TextEditingController materialCostController = TextEditingController();
   TextEditingController labourHoursController = TextEditingController();
+
+  String? selectedCategory;
+
+  final List<String> categories = [
+    'Crotchet',
+    'Jewelry',
+    'Quilling',
+    'Decor',
+    'Cricut Cuts',
+    'Handmade Cards',
+  ];
+
+  InputDecoration inputDecoration(String label) {
+    return InputDecoration(
+      labelText: label,
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+    );
+  }
+
   double? totalPrice;
+
+  String displayedItemName = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('PriceME')),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: itemNameController,
-              decoration: const InputDecoration(labelText: 'ITEM NAME: '),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: materialCostController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'MATERIAL COST: ',
-                prefixText: '\$',
+      appBar: AppBar(
+        toolbarHeight: 150,
+        title: SizedBox(
+          height: 300, // sets the maximum height for the logo
+          child: Image.asset(
+            'assets/images/logo.png',
+            fit: BoxFit.contain, // keeps the aspect ratio
+          ),
+        ),
+        centerTitle: true, // optional, centers the logo
+      ),
+
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20.0,
+            vertical: 50.0,
+          ), // moves content down
+
+          child: Column(
+            children: [
+              Center(
+                child: SizedBox(
+                  width: 300,
+                  child: TextField(
+                    controller: itemNameController,
+                    decoration: inputDecoration('ITEM NAME: '),
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: labourHoursController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'LABOR HOURS: '),
-            ),
-            const SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: calculateTotalPrice,
-              child: const Text('CALCULATE'),
-            ),
-            const SizedBox(height: 20),
-            if (totalPrice != null)
-              Text('Total Price: \$${totalPrice!.toStringAsFixed(2)}'),
-          ],
+              const SizedBox(height: 20),
+
+              Center(
+                child: SizedBox(
+                  width: 300,
+                  child: DropdownButtonFormField<String>(
+                    decoration: inputDecoration('Category'),
+                    value: selectedCategory,
+                    items: categories.map((category) {
+                      return DropdownMenuItem(
+                        value: category,
+                        child: Text(category),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedCategory = value;
+                      });
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              Center(
+                child: SizedBox(
+                  width: 300,
+                  child: TextField(
+                    controller: materialCostController,
+                    decoration: inputDecoration(
+                      'MATERIAL COST: ',
+                    ).copyWith(prefixText: '\$'),
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              Center(
+                child: SizedBox(
+                  width: 300,
+                  child: TextField(
+                    controller: labourHoursController,
+                    keyboardType: TextInputType.number,
+                    decoration: inputDecoration('LABOR HOURS: '),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 30),
+
+              Center(
+                child: SizedBox(
+                  width: 200,
+                  child: ElevatedButton(
+                    onPressed: calculateTotalPrice,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      backgroundColor: Color(0xFFFCD2F3),
+                      foregroundColor: const Color.fromARGB(255, 90, 89, 89),
+                      textStyle: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    child: const Text('CALCULATE'),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              if (totalPrice != null)
+                Text(
+                  '$displayedItemName price: \$${totalPrice!.toStringAsFixed(2)}',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -80,17 +183,37 @@ class _PriceMeScreenState extends State<PriceMeScreen> {
   }
 
   void calculateTotalPrice() {
+    double laborRate = 0;
+
+    if (selectedCategory == 'Crotchet') {
+      laborRate = 20;
+    } else if (selectedCategory == 'Jewelry') {
+      laborRate = 10;
+    } else if (selectedCategory == 'Decor') {
+      laborRate = 10;
+    } else if (selectedCategory == 'Cricut Cut') {
+      laborRate = 5;
+    } else if (selectedCategory == 'Quilling') {
+      laborRate = 20;
+    } else if (selectedCategory == 'Handmade Card') {
+      laborRate = 8;
+    } else {
+      laborRate = 0; // default if no category selected
+    }
+
     final materialCost = double.tryParse(materialCostController.text);
     final laborHours = double.tryParse(labourHoursController.text);
+    final itemName = itemNameController.text.isNotEmpty
+        ? '${itemNameController.text[0].toUpperCase()}${itemNameController.text.substring(1)}'
+        : 'Item';
 
     if (materialCost == null || laborHours == null) {
       setState(() {
         totalPrice = null; // or handle error
+        displayedItemName = itemName;
       });
       return;
     }
-
-    const laborRate = 10.0; // example rate per hour
     setState(() {
       totalPrice = materialCost + (laborHours * laborRate);
     });
