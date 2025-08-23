@@ -194,11 +194,11 @@ class _PriceMeScreenState extends State<PriceMeScreen> {
 
     // Define labor rates in a map
     final Map<String, double> laborRates = {
-      'crotchet': 20,
+      'crotchet': 12,
       'jewelry': 10,
       'decor': 10,
       'cricut cut': 5,
-      'quilling': 20,
+      'quilling': 8,
       'handmade card': 8,
     };
 
