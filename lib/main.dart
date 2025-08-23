@@ -32,13 +32,13 @@ class _PriceMeScreenState extends State<PriceMeScreen> {
 
   String? selectedCategory;
 
-  final List<String> categories = [
-    'Crotchet',
-    'Jewelry',
-    'Quilling',
-    'Decor',
-    'Cricut Cut',
-    'Handmade Card',
+  final List<Map<String, String>> categories = [
+    {'value': 'crotchet', 'label': 'Crotchet'},
+    {'value': 'jewelry', 'label': 'Jewelry'},
+    {'value': 'quilling', 'label': 'Quilling'},
+    {'value': 'decor', 'label': 'Decor'},
+    {'value': 'cricut cut', 'label': 'Cricut Cut'},
+    {'value': 'handmade card', 'label': 'Handmade Card'},
   ];
 
   InputDecoration inputDecoration(String label) {
@@ -96,8 +96,8 @@ class _PriceMeScreenState extends State<PriceMeScreen> {
                     value: selectedCategory,
                     items: categories.map((category) {
                       return DropdownMenuItem(
-                        value: category,
-                        child: Text(category),
+                        value: category['value'], // internal lowercase value
+                        child: Text(category['label']!), // user-friendly label
                       );
                     }).toList(),
                     onChanged: (value) {
@@ -183,37 +183,37 @@ class _PriceMeScreenState extends State<PriceMeScreen> {
   }
 
   void calculateTotalPrice() {
-    double laborRate = 0;
+    final materialCost = double.tryParse(materialCostController.text.trim());
+    final laborHours = double.tryParse(labourHoursController.text.trim());
 
-    if (selectedCategory == 'Crotchet') {
-      laborRate = 20;
-    } else if (selectedCategory == 'Jewelry') {
-      laborRate = 10;
-    } else if (selectedCategory == 'Decor') {
-      laborRate = 10;
-    } else if (selectedCategory == 'Cricut Cut') {
-      laborRate = 5;
-    } else if (selectedCategory == 'Quilling') {
-      laborRate = 20;
-    } else if (selectedCategory == 'Handmade Card') {
-      laborRate = 8;
-    } else {
-      laborRate = 0; // default if no category selected
-    }
-
-    final materialCost = double.tryParse(materialCostController.text);
-    final laborHours = double.tryParse(labourHoursController.text);
-    final itemName = itemNameController.text.isNotEmpty
-        ? '${itemNameController.text[0].toUpperCase()}${itemNameController.text.substring(1)}'
+    // Normalize item name
+    String rawName = itemNameController.text.trim();
+    final itemName = rawName.isNotEmpty
+        ? '${rawName[0].toUpperCase()}${rawName.substring(1)}'
         : 'Item';
+
+    // Define labor rates in a map
+    final Map<String, double> laborRates = {
+      'crotchet': 20,
+      'jewelry': 10,
+      'decor': 10,
+      'cricut cut': 5,
+      'quilling': 20,
+      'handmade card': 8,
+    };
+
+    // Normalize category
+    final categoryKey = selectedCategory?.trim().toLowerCase();
+    final laborRate = laborRates[categoryKey] ?? 0;
 
     if (materialCost == null || laborHours == null) {
       setState(() {
-        totalPrice = null; // or handle error
+        totalPrice = null;
         displayedItemName = itemName;
       });
       return;
     }
+
     setState(() {
       totalPrice = materialCost + (laborHours * laborRate);
       displayedItemName = itemName;
